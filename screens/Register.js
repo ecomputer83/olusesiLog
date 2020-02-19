@@ -33,7 +33,7 @@ class Register extends React.Component {
           >
             <Block flex middle>
             <Block middle>
-                <Image source={Images.Logo} style={{ width: 294, height: 88, bottom: 10 }} />
+                <Image source={Images.Logo} style={{ width: 194, bottom: 10 }} />
               </Block>
               <Block style={styles.registerContainer}>
                 <Block flex space="evenly">

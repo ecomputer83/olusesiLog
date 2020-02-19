@@ -27,7 +27,7 @@ export default class Login extends React.Component {
           <Block space="between" style={styles.padded}>
             <Block>
               <Block middle>
-                <Image source={Images.Logo} style={{ width: 294, height: 88, bottom: 40, position: 'absolute' }} />
+                <Image source={Images.Logo} style={{ width: 194, bottom: 40, position: 'absolute' }} />
               </Block>
               
               <Block style={{

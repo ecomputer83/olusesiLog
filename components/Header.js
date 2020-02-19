@@ -47,11 +47,6 @@ class Header extends React.Component {
         return [
           <AddButton key="add-appointment" navigation={navigation} isWhite={white} link="BookOption"/>
         ];
-
-      case 'Home':
-        return [
-          <Image key="1" style={styles.logo} source={Images.Logo} />
-        ];
       default:
         break;
     }
@@ -116,7 +111,7 @@ class Header extends React.Component {
   };
   renderHeader = () => {
     const { search, message, tabs } = this.props;
-    if (search || tabs || messag) {
+    if (search || tabs || message) {
       return (
         <Block center>
           {message ? this.renderMessage() : null}

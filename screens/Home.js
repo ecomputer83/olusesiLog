@@ -1,15 +1,14 @@
 import React from "react";
-import { StyleSheet, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, PermissionsAndroid, Platform, Dimensions, ScrollView } from "react-native";
 import { Block, theme,Image, Text } from "galio-framework";
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { TabNavigator } from "react-navigation";
+import Geolocation from 'react-native-geolocation-service';
 import config from '../config';
 
 const { width, height } = Dimensions.get("screen");
 const ratio = width / height;
-
 class Home extends React.Component {
   
   constructor(props) {
@@ -40,18 +39,27 @@ class Home extends React.Component {
   }
 
   componentDidMount(){
-    navigator.geolocation.getCurrentPosition(
+    this.assignCoordinate();
+  }
+
+  assignCoordinate = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (hasLocationPermission) {
+
+      Geolocation.getCurrentPosition(
       (position) => {
         console.log("wokeeey");
         console.log(position);
-        this.displayRegion = this.state.displayRegion;
-        this.displayRegion.latitude = position.coords.latitude;
-        this.displayRegion.longitude = position.coords.longitude;
-        this.setState({displayRegion: this.displayRegion});
+        var displayRegion = this.state.displayRegion;
+        displayRegion.latitude = position.coords.latitude;
+        displayRegion.longitude = position.coords.longitude;
+        this.setState({displayRegion: displayRegion});
       },
       (error) => this.setState({ error: error.message }),
       { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
     );
+    }
   }
   
   onMapPress = (e) => {
@@ -79,8 +87,38 @@ class Home extends React.Component {
     }
   }
 
+  hasLocationPermission = async () => {
+    if (Platform.OS === 'ios' ||
+        (Platform.OS === 'android' && Platform.Version < 23)) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (hasPermission) return true;
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
+    }
+
+    return false;
+  }
   moveToUserLocation = async () => {
-    navigator.geolocation.getCurrentPosition((location) => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) return;
+
+    Geolocation.getCurrentPosition((location) => {
     const coordinates = {
       latitude: location.coords.latitude, 
       longitude: location.coords.longitude,
@@ -111,6 +149,8 @@ class Home extends React.Component {
 
   render() {
     const { navigation } = this.props;
+    const { isSearching } = this.state;
+    const numberOfMarkers = this.state.markers.length;
     return (
       <Block flex center style={styles.home}>
         <Block style={{ width, height }}>
@@ -185,9 +225,9 @@ class Home extends React.Component {
 <GooglePlacesAutocomplete
   placeholder='Search'
   minLength={2} // minimum length of text to search
-  autoFocus={false}
+  autoFocus={true}
   returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
-  listViewDisplayed={false}   // true/false/undefined
+  listViewDisplayed='auto'   // true/false/undefined
   fetchDetails={true}
   renderDescription={row => row.description} // custom description render
   onPress={(data, details = null) => this.changeMapRegion(data, details)}
@@ -203,12 +243,22 @@ class Home extends React.Component {
     components: 'country:ng'
   }}
   
-  styles={styles.searchBar}
+  styles={{
+    textInputContainer: {
+      width: '100%'
+    },
+    description: {
+      fontWeight: 'bold'
+    },
+    predefinedPlacesDescription: {
+      color: '#1faadb'
+    }
+  }}
   
-  // currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-  // currentLocationLabel="Current location"
-  // filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-  // predefinedPlaces={[homePlace, workPlace]}
+  currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+  currentLocationLabel="Current location"
+  filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+  //predefinedPlaces={[homePlace, workPlace]}
 
   debounce={500} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
   // renderLeftButton={
