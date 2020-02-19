@@ -21,7 +21,7 @@ export default class Onboarding extends React.Component {
           <Block space="between" style={styles.padded}>
             <Block>
               <Block middle>
-                <Image source={Images.Logo} style={{ width: 138, height: 124, bottom: 100, position: 'absolute' }} />
+                <Image source={Images.Logo} style={{ width: 294, height: 100, bottom: 200, position: 'absolute' }} />
               </Block>
               
               

@@ -8,6 +8,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import Home from '../screens/Home';
 import Login from '../screens/Login';
 import Register from '../screens/Register';
+import Onboarding from '../screens/Onboarding';
 
 // drawer
 import Menu from './Menu';

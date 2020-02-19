@@ -1,8 +1,7 @@
 // local imgs
 const Onboarding = require('../assets/imgs/background.png');
 const Logo = require('../assets/imgs/icon.png');
-const FrontImage = require('../assets/imgs/frontImage.png');
-const HeaderBackground = require('../assets/imgs/header.png');
+const HeaderBackground = require('../assets/imgs/header.jpg');
 //const Vehicle = require('../assets/imgs/vehicle.jpg');
 
 // const Viewed = [
@@ -18,7 +17,6 @@ export default {
   Onboarding,
   Logo,
   // Viewed,
-  FrontImage: FrontImage,
   HeaderBackground,
   //Vehicle
 };
