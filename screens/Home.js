@@ -3,7 +3,7 @@ import { StyleSheet, PermissionsAndroid, Platform, Dimensions, ScrollView } from
 import { Block, theme,Image, Text } from "galio-framework";
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from '../components';
 import Geolocation from 'react-native-geolocation-service';
 import config from '../config';
 
@@ -257,6 +257,20 @@ class Home extends React.Component {
   
   currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
   currentLocationLabel="Current location"
+  nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+      GoogleReverseGeocodingQuery={{
+        // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+      }}
+      GooglePlacesSearchQuery={{
+        // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+        rankby: 'distance',
+        type: 'cafe'
+      }}
+      
+      GooglePlacesDetailsQuery={{
+        // available options for GooglePlacesDetails API : https://developers.google.com/places/web-service/details
+        fields: 'formatted_address',
+      }}
   filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
   //predefinedPlaces={[homePlace, workPlace]}
 
